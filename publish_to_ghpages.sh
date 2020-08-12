@@ -4,7 +4,7 @@
 
 remote=${1:-origin}
 
-if [ "$(git remote -v | grep ${target})" == "" ]
+if [ "$(git remote -v | grep ${remote})" == "" ]
 then
     echo "git target ${remote} does not exist, check 'git remote -v'"
     exit 1;
@@ -27,7 +27,7 @@ git worktree prune
 rm -rf .git/worktrees/public/
 
 echo "Checking out gh-pages branch into public"
-git worktree add -B gh-pages public ${target}/gh-pages
+git worktree add -B gh-pages public ${remote}/gh-pages
 
 echo "Updating gh-pages branch"
 pushd public
