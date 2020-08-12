@@ -10,7 +10,7 @@ then
     # exit 1;
 fi
 
-if [ "$(ls -d ./puublic 2>/dev/null)" == "" ]
+if [ "$(ls -d ./public)" == "" ]
 then
     echo "./public does not exist, did you run hugo and check the output?"
     exit 1;
