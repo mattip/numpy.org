@@ -24,13 +24,13 @@ echo "Checking out gh-pages branch into public"
 git worktree add -B gh-pages public upstream/gh-pages
 
 echo "Updating gh-pages branch"
-cd public && git add --all && git commit -m "Publishing to gh-pages (via script)"
+pushd public
+git add --all && git commit -m "Publishing to gh-pages (via script)"
 
 if [ "$(git remote -v | grep ${target})" == "" ]
 then
     echo "git target ${remote} does not exist, check 'git remote -v'"
     exit 1;
 echo "Pushing to github ${target}"
-if [
 git push ${target} gh-pages
 
