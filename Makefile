@@ -1,21 +1,34 @@
 # type `make help` to see all options 
 
+# which "git remote" to push to, handy for forks of this repo
+TARGET?=origin
+
+BRANCHEXISTS = $(shell git branch --list $(TARGET)/gh-pages)
+
 all: build
 
-.PHONY: serve html clean github help
+.PHONY: serve html clean deploy help
 
-serve: ## serve the website
-	@hugo --i18n-warnings server -D
+.SILENT:
 
-html: ## build the website
-	@hugo
-	@touch public/.nojekyll
+serve: public ## serve the website
+	hugo --i18n-warnings server -D
+
+html: ## build the website in ./public
+	if [ -z "$(BRANCHEXISTS)" ]; then \
+		git branch $(TARGET)/gh-pages; \
+	fi
+	hugo
+	touch public/.nojekyll
 
 clean: ## remove the build artifacts, mainly the "public" directory
-	@rm -rf public
+	rm -rf public
+	git worktree prune
+	rm -rf .git/wortrees/public
 
-github: | clean html ## push the built site to the gh-pages of this repo
-	@sh ./publish_to_ghpages.sh origin
+deploy: public ## push the built site to the gh-pages of this repo
+	cd public && git add --all && git commit -m"Publishing to gh-pages"
+	git push $(TARGET) gh-pages
 
 
 # Add help text after each target name starting with '\#\#'

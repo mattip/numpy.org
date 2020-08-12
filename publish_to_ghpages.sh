@@ -1,23 +1,23 @@
 #!/bin/sh
+set -ex
 
 # See https://gohugo.io/hosting-and-deployment/hosting-on-github/#put-it-into-a-script-1
 
 remote=${1:-origin}
-echo $remote
 
-if [ "$(git remote -v | grep ${remote} 2>/dev/null)" == "" ]
+if [ -z "$(git remote -v | grep ${remote} 2>/dev/null)" ]
 then
-    echo "git target ${remote} does not exist, check 'git remote -v'"
+    echo "git target \"${remote}\" does not exist, check 'git remote -v'"
     exit 1;
 fi
 
-if [ "$(git status -s)" != "" ]
+if [ -n "$(git status -s)" ]
 then
     echo "The working directory is dirty. Please commit any pending changes."
     # exit 1;
 fi
 
-if [ "$(ls -d public 2>/dev/null)" != "public" ]
+if [ -z "$(ls -d public 2>/dev/null) "]
 then
     echo "./public does not exist, did you run hugo and check the output?"
     exit 1;
@@ -26,6 +26,12 @@ fi
 echo "Deleting old publication"
 git worktree prune
 rm -rf .git/worktrees/public/
+
+if [ -z "$(git branch --list ${remote}/gh-pages 2>/dev/null)" ]
+then
+    echo "create brach ${remote}/gh-pages"
+    git branch ${remote}
+fi
 
 echo "Checking out gh-pages branch into public"
 git worktree add -B gh-pages public ${remote}/gh-pages
