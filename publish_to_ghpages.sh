@@ -3,8 +3,9 @@
 # See https://gohugo.io/hosting-and-deployment/hosting-on-github/#put-it-into-a-script-1
 
 remote=${1:-origin}
+echo $remote
 
-if [ "$(git remote -v | grep ${remote})" == "" ]
+if [ "$(git remote -v | grep ${remote} 2>/dev/null)" == "" ]
 then
     echo "git target ${remote} does not exist, check 'git remote -v'"
     exit 1;
